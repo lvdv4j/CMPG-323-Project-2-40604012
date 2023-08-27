@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using cmpg323_project.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<cmpg323sqldbserverContext>(options => options.UseSqlServer(connectionString));
 
 var app = builder.Build();
 
