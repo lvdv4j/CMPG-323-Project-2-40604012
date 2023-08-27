@@ -24,21 +24,23 @@ namespace cmpg323_project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
-            return await _context.Customers.ToListAsync();
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
+            var customers = await _context.Customers.ToListAsync();
+            return Ok(customers);
         }
 
         // GET: api/Customers/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Customer>> GetCustomer(short id)
         {
-          if (_context.Customers == null)
-          {
-              return NotFound();
-          }
+            if (_context.Customers == null)
+            {
+                return NotFound();
+            }
+
             var customer = await _context.Customers.FindAsync(id);
 
             if (customer == null)
@@ -46,7 +48,7 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
 
-            return customer;
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5
@@ -85,10 +87,10 @@ namespace cmpg323_project.Controllers
         [HttpPost]
         public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
-          if (_context.Customers == null)
-          {
-              return Problem("Entity set 'cmpg323sqldbserverContext.Customers'  is null.");
-          }
+            if (_context.Customers == null)
+            {
+                return Problem("Entity set 'cmpg323sqldbserverContext.Customers'  is null.");
+            }
             _context.Customers.Add(customer);
             try
             {
