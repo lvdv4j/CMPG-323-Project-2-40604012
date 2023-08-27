@@ -209,6 +209,11 @@ project.lock.json
 # Visual Studio Code
 .vscode/
 
+# ASP.NET specific files and folders
+wwwroot/
+appsettings.json
+appsettings.Development.json
+
 # Output folder used by Webpack or other FE stuff
 **/node_modules/*
 **/wwwroot/*
