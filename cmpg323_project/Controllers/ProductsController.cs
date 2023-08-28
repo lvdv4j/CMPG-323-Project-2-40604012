@@ -135,12 +135,13 @@ namespace cmpg323_project.Controllers
             {
                 return NotFound();
             }
-            var product = await _context.Products.FindAsync(id);
-
             if (!ProductExists(id))
             {
                 return NotFound();
             }
+
+            var product = await _context.Products.FindAsync(id);
+
             if (product == null)
             {
                 return NotFound();
