@@ -51,6 +51,46 @@ namespace cmpg323_project.Controllers
             return Ok(customer);
         }
 
+        // POST: api/Customers
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult> PostCustomer(short customerID, string customerTitle, string customerName, string customerSurname, string cellphone)
+        {
+            if (_context.Customers == null)
+            {
+                return Problem("Entity set 'cmpg323sqldbserverContext.Customers'  is null.");
+            }
+
+            //Create customer object
+            Customer customer = new Customer();
+
+            //fetch values
+            customer.CustomerId = customerID;
+            customer.CustomerTitle = customerTitle;
+            customer.CustomerName = customerName;
+            customer.CustomerSurname = customerSurname;
+            customer.CellPhone = cellphone;
+
+            _context.Customers.Add(customer);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                if (CustomerExists(customer.CustomerId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+        }
+
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -82,35 +122,6 @@ namespace cmpg323_project.Controllers
             return NoContent();
         }
 
-        // POST: api/Customers
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
-        {
-            if (_context.Customers == null)
-            {
-                return Problem("Entity set 'cmpg323sqldbserverContext.Customers'  is null.");
-            }
-            _context.Customers.Add(customer);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (CustomerExists(customer.CustomerId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
-        }
-
         // DELETE: api/Customers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomer(short id)
@@ -120,6 +131,12 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
             var customer = await _context.Customers.FindAsync(id);
+
+            if (!CustomerExists(id))
+            {
+                return NotFound();
+            }
+
             if (customer == null)
             {
                 return NotFound();
