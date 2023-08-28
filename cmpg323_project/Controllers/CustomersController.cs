@@ -61,10 +61,8 @@ namespace cmpg323_project.Controllers
                 return Problem("Entity set 'cmpg323sqldbserverContext.Customers'  is null.");
             }
 
-            //Create customer object
             Customer customer = new Customer();
 
-            //fetch values
             customer.CustomerId = customerID;
             customer.CustomerTitle = customerTitle;
             customer.CustomerName = customerName;

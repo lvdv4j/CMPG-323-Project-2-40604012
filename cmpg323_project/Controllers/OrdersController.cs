@@ -83,12 +83,20 @@ namespace cmpg323_project.Controllers
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<Order>> PostOrder(short orderId, DateTime orderDate, short customerId, string deliveryAddress)
         {
           if (_context.Orders == null)
           {
               return Problem("Entity set 'cmpg323sqldbserverContext.Orders'  is null.");
           }
+
+            Order order = new Order();
+
+            order.OrderId = orderId;
+            order.OrderDate = orderDate;
+            order.CustomerId = customerId;
+            order.DeliveryAddress = deliveryAddress;
+
             _context.Orders.Add(order);
             try
             {
