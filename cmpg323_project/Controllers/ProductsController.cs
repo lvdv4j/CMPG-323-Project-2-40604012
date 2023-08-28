@@ -24,10 +24,10 @@ namespace cmpg323_project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-          if (_context.Products == null)
-          {
-              return NotFound();
-          }
+            if (_context.Products == null)
+            {
+                return NotFound();
+            }
             return await _context.Products.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace cmpg323_project.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(short id)
         {
-          if (_context.Products == null)
-          {
-              return NotFound();
-          }
+            if (_context.Products == null)
+            {
+                return NotFound();
+            }
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)
@@ -51,13 +51,22 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(short id, Product product)
+        [HttpPut("{productId}, {productName}, {productDescription}, {unitsInStock}")]
+        public async Task<IActionResult> PutProduct(short productId, string productName, string productDescription, int unitsInStock)
         {
-            if (id != product.ProductId)
+            Product product = new Product();
+
+            product.ProductId = productId;
+
+            if (productId != product.ProductId)
             {
                 return BadRequest();
             }
+
+            product.ProductId = productId;
+            product.ProductName = productName;
+            product.ProductDescription = productDescription;
+            product.UnitsInStock = unitsInStock;
 
             _context.Entry(product).State = EntityState.Modified;
 
@@ -67,7 +76,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(productId))
                 {
                     return NotFound();
                 }
@@ -82,7 +91,7 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("{productId}, {productName}, {productDescription}, {unitsInStock}")]
         public async Task<ActionResult<Product>> PostProduct(short productId, string productName, string productDescription, int unitsInStock)
         {
           if (_context.Products == null)
@@ -127,10 +136,16 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
             var product = await _context.Products.FindAsync(id);
+
+            if (!ProductExists(id))
+            {
+                return NotFound();
+            }
             if (product == null)
             {
                 return NotFound();
             }
+            
 
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
