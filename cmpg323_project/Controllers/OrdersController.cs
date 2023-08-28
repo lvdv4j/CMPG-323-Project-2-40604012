@@ -132,7 +132,7 @@ namespace cmpg323_project.Controllers
             {
                 return NotFound();
             }
-            if (!OrderExists(orderId))
+            if (!OrderExists(id))
             {
                 return NotFound();
             }
