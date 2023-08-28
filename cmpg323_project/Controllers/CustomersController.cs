@@ -53,7 +53,7 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost ("{customerID}, {customerTitle}, {customerName}, {customerSurname}, {cellphone}")]
         public async Task<ActionResult> PostCustomer(short customerID, string customerTitle, string customerName, string customerSurname, string cellphone)
         {
             if (_context.Customers == null)
@@ -91,13 +91,21 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(short id, Customer customer)
+        [HttpPut("{customerID}, {customerTitle}, {customerName}, {customerSurname}, {cellphone}")]
+        public async Task<IActionResult> PutCustomer(short customerID, string customerTitle, string customerName, string customerSurname, string cellphone)
         {
-            if (id != customer.CustomerId)
+            Customer customer = new Customer();
+            customer.CustomerId = customerID;
+
+            if (customerID != customer.CustomerId)
             {
                 return BadRequest();
             }
+
+            customer.CustomerTitle = customerTitle;
+            customer.CustomerName = customerName;
+            customer.CustomerSurname = customerSurname;
+            customer.CellPhone = cellphone;
 
             _context.Entry(customer).State = EntityState.Modified;
 
@@ -107,7 +115,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(customerID))
                 {
                     return NotFound();
                 }

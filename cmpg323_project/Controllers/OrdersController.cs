@@ -24,10 +24,10 @@ namespace cmpg323_project.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-          if (_context.Orders == null)
-          {
-              return NotFound();
-          }
+            if (_context.Orders == null)
+            {
+                return NotFound();
+            }
             return await _context.Orders.ToListAsync();
         }
 
@@ -35,10 +35,10 @@ namespace cmpg323_project.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Order>> GetOrder(short id)
         {
-          if (_context.Orders == null)
-          {
-              return NotFound();
-          }
+            if (_context.Orders == null)
+            {
+                return NotFound();
+            }
             var order = await _context.Orders.FindAsync(id);
 
             if (order == null)
@@ -51,13 +51,19 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(short id, Order order)
+        [HttpPut("{orderId}, {orderDate}, {customerId}, {deliveryAddress}")]
+        public async Task<IActionResult> PutOrder(short orderId, DateTime orderDate, short customerId, string deliveryAddress)
         {
-            if (id != order.OrderId)
+            Order order = new Order();
+
+            if (orderId != order.OrderId)
             {
                 return BadRequest();
             }
+
+            order.OrderDate = orderDate;
+            order.CustomerId = customerId;
+            order.DeliveryAddress = deliveryAddress;
 
             _context.Entry(order).State = EntityState.Modified;
 
@@ -67,7 +73,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!OrderExists(orderId))
                 {
                     return NotFound();
                 }
@@ -82,7 +88,7 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost ("{orderId}, {orderDate}, {customerId}, {deliveryAddress}")]
         public async Task<ActionResult<Order>> PostOrder(short orderId, DateTime orderDate, short customerId, string deliveryAddress)
         {
           if (_context.Orders == null)
@@ -98,6 +104,7 @@ namespace cmpg323_project.Controllers
             order.DeliveryAddress = deliveryAddress;
 
             _context.Orders.Add(order);
+
             try
             {
                 await _context.SaveChangesAsync();
