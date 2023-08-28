@@ -132,6 +132,10 @@ namespace cmpg323_project.Controllers
             {
                 return NotFound();
             }
+            if (!OrderExists(orderId))
+            {
+                return NotFound();
+            }
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
