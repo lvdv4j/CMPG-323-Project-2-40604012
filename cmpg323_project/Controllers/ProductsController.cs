@@ -83,13 +83,22 @@ namespace cmpg323_project.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct(short productId, string productName, string productDescription, int unitsInStock)
         {
           if (_context.Products == null)
           {
               return Problem("Entity set 'cmpg323sqldbserverContext.Products'  is null.");
           }
+
+            Product product = new Product();
+
+            product.ProductId = productId;
+            product.ProductName = productName;
+            product.ProductDescription = productDescription;
+            product.UnitsInStock = unitsInStock;
+
             _context.Products.Add(product);
+
             try
             {
                 await _context.SaveChangesAsync();
