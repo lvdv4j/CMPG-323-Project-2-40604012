@@ -136,12 +136,11 @@ namespace cmpg323_project.Controllers
             {
                 return NotFound();
             }
-            var customer = await _context.Customers.FindAsync(id);
-
             if (!CustomerExists(id))
             {
                 return NotFound();
             }
+            var customer = await _context.Customers.FindAsync(id);
 
             if (customer == null)
             {

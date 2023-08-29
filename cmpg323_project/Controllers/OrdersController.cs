@@ -32,14 +32,14 @@ namespace cmpg323_project.Controllers
         }
 
         // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(short id)
+        [HttpGet("{orderId}")]
+        public async Task<ActionResult<Order>> GetOrder(short orderId)
         {
             if (_context.Orders == null)
             {
                 return NotFound();
             }
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders.FindAsync(orderId);
 
             if (order == null)
             {
@@ -125,18 +125,18 @@ namespace cmpg323_project.Controllers
         }
 
         // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(short id)
+        [HttpDelete("{orderId}")]
+        public async Task<IActionResult> DeleteOrder(short orderId)
         {
             if (_context.Orders == null)
             {
                 return NotFound();
             }
-            if (!OrderExists(id))
+            if (!OrderExists(orderId))
             {
                 return NotFound();
             }
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders.FindAsync(orderId);
             if (order == null)
             {
                 return NotFound();
@@ -146,6 +146,21 @@ namespace cmpg323_project.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("{customerId}")]
+        public IActionResult GetOrdersForCustomer(short customerId)
+        {
+            var orders = _context.Orders
+                .Where(o => o.CustomerId == customerId)
+                .ToList();
+
+            if (orders.Count == 0)
+            {
+                return NotFound(); // No orders found for the specified customer
+            }
+
+            return Ok(orders);
         }
 
         private bool OrderExists(short id)
