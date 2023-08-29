@@ -70,6 +70,7 @@ namespace cmpg323_project.Controllers
             customer.CellPhone = cellphone;
 
             _context.Customers.Add(customer);
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -86,7 +87,7 @@ namespace cmpg323_project.Controllers
                 }
             }
 
-            return CreatedAtAction("GetCustomer", new { id = customer.CustomerId }, customer);
+            return Ok(customer);
         }
 
         // PUT: api/Customers/5

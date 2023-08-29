@@ -141,7 +141,7 @@ namespace cmpg323_project.Controllers
                 }
             }
 
-            return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
+            return Ok(products);
         }
 
         // DELETE: api/Products/5

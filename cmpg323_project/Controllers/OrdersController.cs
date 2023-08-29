@@ -137,7 +137,7 @@ namespace cmpg323_project.Controllers
                 }
             }
 
-            return CreatedAtAction("GetOrder", new { id = order.OrderId }, order);
+            return Ok(orders);
         }
 
         // DELETE: api/Orders/5
