@@ -49,6 +49,22 @@ namespace cmpg323_project.Controllers
             return order;
         }
 
+        // GET: api/Orders/5
+        [HttpGet("customer/{customerId}")]
+        public async Task<ActionResult<Order>> GetOrdersForCustomer(short customerId)
+        {
+            var orders = await _context.Orders
+        .Where(o => o.CustomerId == customerId)
+        .ToListAsync();
+
+            if (orders.Count == 0)
+            {
+                return NotFound(); // No orders found for the specified customer
+            }
+
+            return Ok(orders);
+        }
+
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{orderId}, {orderDate}, {customerId}, {deliveryAddress}")]
@@ -146,21 +162,6 @@ namespace cmpg323_project.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        [HttpGet("{customerId}")]
-        public IActionResult GetOrdersForCustomer(short customerId)
-        {
-            var orders = _context.Orders
-                .Where(o => o.CustomerId == customerId)
-                .ToList();
-
-            if (orders.Count == 0)
-            {
-                return NotFound(); // No orders found for the specified customer
-            }
-
-            return Ok(orders);
         }
 
         private bool OrderExists(short id)
