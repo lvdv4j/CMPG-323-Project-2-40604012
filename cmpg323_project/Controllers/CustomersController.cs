@@ -53,24 +53,14 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost ("{customerID}, {customerTitle}, {customerName}, {customerSurname}, {cellphone}")]
-        public async Task<ActionResult> PostCustomer(short customerID, string customerTitle, string customerName, string customerSurname, string cellphone)
+        [HttpPost]
+        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
         {
             if (_context.Customers == null)
             {
-                return Problem("Entity set 'cmpg323sqldbserverContext.Customers'  is null.");
+                return Problem("Entity set 'project2sqldbContext.Customers'  is null.");
             }
-
-            Customer customer = new Customer();
-
-            customer.CustomerId = customerID;
-            customer.CustomerTitle = customerTitle;
-            customer.CustomerName = customerName;
-            customer.CustomerSurname = customerSurname;
-            customer.CellPhone = cellphone;
-
             _context.Customers.Add(customer);
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -92,21 +82,13 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{customerID}, {customerTitle}, {customerName}, {customerSurname}, {cellphone}")]
-        public async Task<IActionResult> PutCustomer(short customerID, string customerTitle, string customerName, string customerSurname, string cellphone)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCustomer(short id, Customer customer)
         {
-            Customer customer = new Customer();
-            customer.CustomerId = customerID;
-
-            if (customerID != customer.CustomerId)
+            if (id != customer.CustomerId)
             {
                 return BadRequest();
             }
-
-            customer.CustomerTitle = customerTitle;
-            customer.CustomerName = customerName;
-            customer.CustomerSurname = customerSurname;
-            customer.CellPhone = cellphone;
 
             _context.Entry(customer).State = EntityState.Modified;
 
@@ -116,7 +98,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(customerID))
+                if (!CustomerExists(id))
                 {
                     return NotFound();
                 }

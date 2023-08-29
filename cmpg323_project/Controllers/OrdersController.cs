@@ -67,19 +67,13 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{orderId}, {orderDate}, {customerId}, {deliveryAddress}")]
-        public async Task<IActionResult> PutOrder(short orderId, DateTime orderDate, short customerId, string deliveryAddress)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOrder(short id, Order order)
         {
-            Order order = new Order();
-
-            if (orderId != order.OrderId)
+            if (id != order.OrderId)
             {
                 return BadRequest();
             }
-
-            order.OrderDate = orderDate;
-            order.CustomerId = customerId;
-            order.DeliveryAddress = deliveryAddress;
 
             _context.Entry(order).State = EntityState.Modified;
 
@@ -89,7 +83,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(orderId))
+                if (!OrderExists(id))
                 {
                     return NotFound();
                 }
@@ -104,23 +98,14 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost ("{orderId}, {orderDate}, {customerId}, {deliveryAddress}")]
-        public async Task<ActionResult<Order>> PostOrder(short orderId, DateTime orderDate, short customerId, string deliveryAddress)
+        [HttpPost]
+        public async Task<ActionResult<Order>> PostOrder(Order order)
         {
-          if (_context.Orders == null)
-          {
-              return Problem("Entity set 'cmpg323sqldbserverContext.Orders'  is null.");
-          }
-
-            Order order = new Order();
-
-            order.OrderId = orderId;
-            order.OrderDate = orderDate;
-            order.CustomerId = customerId;
-            order.DeliveryAddress = deliveryAddress;
-
+            if (_context.Orders == null)
+            {
+                return Problem("Entity set 'project2sqldbContext.Orders'  is null.");
+            }
             _context.Orders.Add(order);
-
             try
             {
                 await _context.SaveChangesAsync();

@@ -68,22 +68,15 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{productId}, {productName}, {productDescription}, {unitsInStock}")]
-        public async Task<IActionResult> PutProduct(short productId, string productName, string productDescription, int unitsInStock)
+        // PUT: api/Products/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProduct(short id, Product product)
         {
-            Product product = new Product();
-
-            product.ProductId = productId;
-
-            if (productId != product.ProductId)
+            if (id != product.ProductId)
             {
                 return BadRequest();
             }
-
-            product.ProductId = productId;
-            product.ProductName = productName;
-            product.ProductDescription = productDescription;
-            product.UnitsInStock = unitsInStock;
 
             _context.Entry(product).State = EntityState.Modified;
 
@@ -93,7 +86,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(productId))
+                if (!ProductExists(id))
                 {
                     return NotFound();
                 }
@@ -108,23 +101,14 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost("{productId}, {productName}, {productDescription}, {unitsInStock}")]
-        public async Task<ActionResult<Product>> PostProduct(short productId, string productName, string productDescription, int unitsInStock)
+        [HttpPost]
+        public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-          if (_context.Products == null)
-          {
-              return Problem("Entity set 'cmpg323sqldbserverContext.Products'  is null.");
-          }
-
-            Product product = new Product();
-
-            product.ProductId = productId;
-            product.ProductName = productName;
-            product.ProductDescription = productDescription;
-            product.UnitsInStock = unitsInStock;
-
+            if (_context.Products == null)
+            {
+                return Problem("Entity set 'project2sqldbContext.Products'  is null.");
+            }
             _context.Products.Add(product);
-
             try
             {
                 await _context.SaveChangesAsync();
