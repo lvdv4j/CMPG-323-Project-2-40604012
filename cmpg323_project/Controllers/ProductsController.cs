@@ -32,14 +32,14 @@ namespace cmpg323_project.Controllers
         }
 
         // GET: api/Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(short id)
+        [HttpGet("{productId}")]
+        public async Task<ActionResult<Product>> GetProduct(short productId)
         {
             if (_context.Products == null)
             {
                 return NotFound();
             }
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(productId);
 
             if (product == null)
             {
@@ -128,19 +128,19 @@ namespace cmpg323_project.Controllers
         }
 
         // DELETE: api/Products/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProduct(short id)
+        [HttpDelete("{productId}")]
+        public async Task<IActionResult> DeleteProduct(short productId)
         {
             if (_context.Products == null)
             {
                 return NotFound();
             }
-            if (!ProductExists(id))
+            if (!ProductExists(productId))
             {
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(productId);
 
             if (product == null)
             {
