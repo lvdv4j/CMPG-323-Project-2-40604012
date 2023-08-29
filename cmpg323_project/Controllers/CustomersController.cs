@@ -33,15 +33,15 @@ namespace cmpg323_project.Controllers
         }
 
         // GET: api/Customers/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomer(short id)
+        [HttpGet("{customerID}")]
+        public async Task<ActionResult<Customer>> GetCustomer(short customerID)
         {
             if (_context.Customers == null)
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(customerID);
 
             if (customer == null)
             {
@@ -129,18 +129,18 @@ namespace cmpg323_project.Controllers
         }
 
         // DELETE: api/Customers/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomer(short id)
+        [HttpDelete("{customerID}")]
+        public async Task<IActionResult> DeleteCustomer(short customerID)
         {
             if (_context.Customers == null)
             {
                 return NotFound();
             }
-            if (!CustomerExists(id))
+            if (!CustomerExists(customerID))
             {
                 return NotFound();
             }
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(customerID);
 
             if (customer == null)
             {
