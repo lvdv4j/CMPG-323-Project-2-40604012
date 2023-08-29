@@ -49,6 +49,23 @@ namespace cmpg323_project.Controllers
             return product;
         }
 
+        [HttpGet("order/{orderId}")]
+        public async Task<ActionResult<Product>> GetProductsForOrder(short orderId)
+        {
+            var order = await _context.Orders
+                .Include(o => o.OrderDetails).ThenInclude(od => od.Product)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+
+            if (order == null)
+            {
+                return NotFound(); // Order not found for the specified order ID
+            }
+
+            var products = order.OrderDetails.Select(od => od.Product).ToList();
+
+            return Ok(products);
+        }
+
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{productId}, {productName}, {productDescription}, {unitsInStock}")]
