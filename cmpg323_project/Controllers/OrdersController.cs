@@ -137,7 +137,7 @@ namespace cmpg323_project.Controllers
                 }
             }
 
-            return Ok(orders);
+            return Ok(order);
         }
 
         // DELETE: api/Orders/5
