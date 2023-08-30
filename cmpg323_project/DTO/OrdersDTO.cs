@@ -7,6 +7,6 @@
         public short CustomerId { get; set; }
         public string? DeliveryAddress { get; set; }
 
-        public List<OrderDetail> OrderDetails { get; set; }
+        public List<OrderDetailsDTO> OrderDetails { get; set; }
     }
 }

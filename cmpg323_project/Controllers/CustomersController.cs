@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using cmpg323_project.Models;
+using cmpg323_project.DTO;
 
 namespace cmpg323_project.Controllers
 {
@@ -24,19 +25,30 @@ namespace cmpg323_project.Controllers
 
         // GET: api/Customers
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+        public async Task<ActionResult<IEnumerable<CustomersDTO>>> GetCustomers()
         {
+            var customers = await _context.Customers.ToListAsync();
+
             if (_context.Customers == null)
             {
                 return NotFound();
             }
-            var customers = await _context.Customers.ToListAsync();
-            return Ok(customers);
+
+            var customersDTO = customers.Select(customer => new CustomersDTO
+            {
+                CustomerId = customer.CustomerId,
+                CustomerTitle = customer.CustomerTitle,
+                CustomerName = customer.CustomerName,
+                CustomerSurname = customer.CustomerSurname,
+                CellPhone = customer.CellPhone
+            }).ToList();
+
+            return customersDTO;
         }
 
         // GET: api/Customers/5
         [HttpGet("{customerID}")]
-        public async Task<ActionResult<Customer>> GetCustomer(short customerID)
+        public async Task<ActionResult<CustomersDTO>> GetCustomer(short customerID)
         {
             if (_context.Customers == null)
             {
@@ -50,18 +62,37 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
 
-            return Ok(customer);
+            var customersDTO = new CustomersDTO
+            {
+                CustomerId = customer.CustomerId,
+                CustomerTitle = customer.CustomerTitle,
+                CustomerName = customer.CustomerName,
+                CustomerSurname = customer.CustomerSurname,
+                CellPhone = customer.CellPhone
+            };
+
+            return customersDTO;
         }
 
         // POST: api/Customers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Customer>> PostCustomer(Customer customer)
+        public async Task<ActionResult<Customer>> PostCustomer(CustomersDTO customerDTO)
         {
             if (_context.Customers == null)
             {
-                return Problem("Entity set 'project2sqldbContext.Customers'  is null.");
+                return Problem("Entity set 'project2sqldbContext.Customers' is null.");
             }
+
+            var customer = new Customer
+            {
+                CustomerId = customerDTO.CustomerId,
+                CustomerTitle = customerDTO.CustomerTitle,
+                CustomerName = customerDTO.CustomerName,
+                CustomerSurname = customerDTO.CustomerSurname,
+                CellPhone = customerDTO.CellPhone
+            };
+
             _context.Customers.Add(customer);
             try
             {
@@ -69,30 +100,42 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateException)
             {
-                if (CustomerExists(customer.CustomerId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
+                return Conflict();
             }
 
-            return Ok(customer);
+            // Create the corresponding DTO for the response
+            var createdCustomerDTO = new CustomersDTO
+            {
+                CustomerId = customer.CustomerId,
+                CustomerTitle = customer.CustomerTitle,
+                CustomerName = customer.CustomerName,
+                CustomerSurname = customer.CustomerSurname,
+                CellPhone = customer.CellPhone
+            };
+
+            return CreatedAtAction(nameof(GetCustomer), new { id = customer.CustomerId }, createdCustomerDTO);
         }
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(short id, Customer customer)
+        public async Task<IActionResult> PutCustomer(short id, CustomersDTO customerDTO)
         {
-            if (id != customer.CustomerId)
+            if (id != customerDTO.CustomerId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(customer).State = EntityState.Modified;
+            if(!CustomerExists(id))
+            {
+                return NotFound();
+            }
+
+            var customer = await _context.Customers.FindAsync(id);
+            customer.CustomerTitle = customerDTO.CustomerTitle;
+            customer.CustomerName = customerDTO.CustomerName;
+            customer.CustomerSurname = customerDTO.CustomerSurname;
+            customer.CellPhone = customerDTO.CellPhone;
 
             try
             {
