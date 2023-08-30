@@ -113,7 +113,7 @@ namespace cmpg323_project.Controllers
                 CellPhone = customer.CellPhone
             };
 
-            return CreatedAtAction(nameof(GetCustomer), new { id = customer.CustomerId }, createdCustomerDTO);
+            return Ok(createdCustomerDTO);
         }
 
         // PUT: api/Customers/5

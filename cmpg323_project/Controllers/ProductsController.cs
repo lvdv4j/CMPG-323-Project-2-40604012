@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using cmpg323_project.Models;
+using cmpg323_project.DTO;
 
 namespace cmpg323_project.Controllers
 {
@@ -24,23 +25,31 @@ namespace cmpg323_project.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductsDTO>>> GetProducts()
         {
-            if (_context.Products == null)
+            var products = await _context.Products.ToListAsync();
+
+            if (products == null)
             {
                 return NotFound();
             }
-            return await _context.Products.ToListAsync();
+
+            //implement DTO list to create a product object
+            var productDTOs = products.Select(product => new ProductsDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                ProductDescription = product.ProductDescription,
+                UnitsInStock = product.UnitsInStock
+            }).ToList();
+
+            return productDTOs;
         }
 
         // GET: api/Products/5
-        [HttpGet("{productId}")]
-        public async Task<ActionResult<Product>> GetProduct(short productId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProductsDTO>> GetProduct(short productId)
         {
-            if (_context.Products == null)
-            {
-                return NotFound();
-            }
             var product = await _context.Products.FindAsync(productId);
 
             if (product == null)
@@ -48,7 +57,16 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
 
-            return product;
+            //create a productDTO object
+            var productDTO = new ProductsDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                ProductDescription = product.ProductDescription,
+                UnitsInStock = product.UnitsInStock
+            };
+
+            return productDTO;
         }
 
         [HttpGet("order/{orderId}")]
@@ -71,14 +89,25 @@ namespace cmpg323_project.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(short id, Product product)
+        public async Task<IActionResult> PutProduct(short id, ProductsDTO productDTO)
         {
-            if (id != product.ProductId)
+            if (id != productDTO.ProductId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            if (!ProductExists(id))
+            {
+                return NotFound();
+            }
+
+            // Get the product entity
+            var product = await _context.Products.FindAsync(id);
+
+            //Update the product using the DTO values
+            product.ProductName = productDTO.ProductName;
+            product.ProductDescription = productDTO.ProductDescription;
+            product.UnitsInStock = productDTO.UnitsInStock;
 
             try
             {
@@ -102,12 +131,22 @@ namespace cmpg323_project.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<ActionResult<ProductsDTO>> PostProduct(ProductsDTO productDTO)
         {
             if (_context.Products == null)
             {
-                return Problem("Entity set 'project2sqldbContext.Products'  is null.");
+                return Problem("Entity set 'project2sqldbContext.Products' is null.");
             }
+
+            // Create a Product entity using the DTO values
+            var product = new Product
+            {
+                ProductId = productDTO.ProductId,
+                ProductName = productDTO.ProductName,
+                ProductDescription = productDTO.ProductDescription,
+                UnitsInStock = productDTO.UnitsInStock
+            };
+
             _context.Products.Add(product);
             try
             {
@@ -125,7 +164,16 @@ namespace cmpg323_project.Controllers
                 }
             }
 
-            return Ok(product);
+            // Create a ProductDTO object
+            var createdProductDTO = new ProductsDTO
+            {
+                ProductId = product.ProductId,
+                ProductName = product.ProductName,
+                ProductDescription = product.ProductDescription,
+                UnitsInStock = product.UnitsInStock
+            };
+
+            return Ok(createdProductDTO);
         }
 
         // DELETE: api/Products/5
@@ -148,7 +196,6 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
             
-
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
