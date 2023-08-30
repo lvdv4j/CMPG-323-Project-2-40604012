@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using cmpg323_project.Models;
 using cmpg323_project.DTO;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace cmpg323_project.Controllers
 {
@@ -114,6 +115,41 @@ namespace cmpg323_project.Controllers
             };
 
             return Ok(createdCustomerDTO);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchCustomer(short id, JsonPatchDocument<Customer> patchDocument)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            patchDocument.ApplyTo(customer, ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomerExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // PUT: api/Customers/5

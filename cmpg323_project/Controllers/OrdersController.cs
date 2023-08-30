@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using cmpg323_project.Models;
 using Microsoft.AspNetCore.Authorization;
 using cmpg323_project.DTO;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace cmpg323_project.Controllers
 {
