@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace cmpg323_project.Models
 {
@@ -11,7 +12,10 @@ namespace cmpg323_project.Models
         public int Quantity { get; set; }
         public int? Discount { get; set; }
 
+        [JsonIgnore]
         public virtual Order Order { get; set; } = null!;
+
+        [JsonIgnore]
         public virtual Product Product { get; set; } = null!;
     }
 }
