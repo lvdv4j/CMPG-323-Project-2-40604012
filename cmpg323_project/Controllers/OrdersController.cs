@@ -169,6 +169,7 @@ namespace cmpg323_project.Controllers
 
         // POST: api/Orders
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
         public async Task<ActionResult<Order>> PostOrder(OrdersDTO ordersDTO)
         {
             if (_context.Customers == null || _context.Products == null)

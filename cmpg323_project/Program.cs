@@ -15,6 +15,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using System.Linq;
+using Newtonsoft.Json.Serialization;
 
 using cmpg323_project.Models;
 
@@ -97,6 +98,18 @@ c.AddSecurityDefinition("Bearer", securityScheme);
     c.AddSecurityRequirement(securityRequirement);
 });
 
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+});
+
+builder.Services.AddControllers()
+.AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
+
+//build the app
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
