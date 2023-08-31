@@ -212,13 +212,13 @@ namespace cmpg323_project.Controllers
         {
             if (_context.Customers == null || _context.Products == null)
             {
-                return Problem("Entity sets are null.");
+                return Problem("Customer or Products are null.");
             }
 
             var customer = await _context.Customers.FindAsync(ordersDTO.CustomerId);
             if (customer == null)
             {
-                return NotFound($"Customer with ID {ordersDTO.CustomerId} not found.");
+                return NotFound($"Customer with ID {ordersDTO.CustomerId} could not be found.");
             }
 
             var order = new Order
@@ -234,7 +234,7 @@ namespace cmpg323_project.Controllers
                 var product = await _context.Products.FindAsync(orderDetailsDTO.ProductId);
                 if (product == null)
                 {
-                    return NotFound($"Product with ID {orderDetailsDTO.ProductId} not found.");
+                    return NotFound($"Product with ID {orderDetailsDTO.ProductId} could not be found.");
                 }
 
                 var orderDetail = new OrderDetail
@@ -262,7 +262,7 @@ namespace cmpg323_project.Controllers
             var order = await _context.Orders.FindAsync(orderId);
             if ((!OrderExists(orderId)))
             {
-                return NotFound($"Order with ID {orderId} not found.");
+                return NotFound($"Order with ID {orderId} could not be found.");
             }
 
             // Delete related OrderDetails first

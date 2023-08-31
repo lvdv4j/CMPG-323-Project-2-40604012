@@ -127,7 +127,7 @@ namespace cmpg323_project.Controllers
         [HttpPut("{productId}")]
         public async Task<IActionResult> PutProduct(short productId, ProductsDTO productDTO)
         {
-            if (id != productDTO.ProductId)
+            if (productId != productDTO.ProductId)
             {
                 return BadRequest();
             }
