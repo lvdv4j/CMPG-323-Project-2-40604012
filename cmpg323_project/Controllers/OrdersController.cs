@@ -106,10 +106,10 @@ namespace cmpg323_project.Controllers
             return Ok(orders);
         }
 
-        [HttpPatch("{customerId}")]
-        public async Task<IActionResult> PatchOrder(short customerId, JsonPatchDocument<Order> patchDocument)
+        [HttpPatch("{orderId}")]
+        public async Task<IActionResult> PatchOrder(short orderId, JsonPatchDocument<Order> patchDocument)
         {
-            var order = await _context.Orders.FindAsync(customerId);
+            var order = await _context.Orders.FindAsync(orderId);
             if (order == null)
             {
                 return NotFound();
@@ -128,7 +128,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(customerId))
+                if (!OrderExists(orderId))
                 {
                     return NotFound();
                 }
