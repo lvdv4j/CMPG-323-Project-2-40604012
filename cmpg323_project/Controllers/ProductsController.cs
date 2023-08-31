@@ -48,7 +48,7 @@ namespace cmpg323_project.Controllers
         }
 
         // GET: api/Products/5
-        [HttpGet("{id}")]
+        [HttpGet("{productId}")]
         public async Task<ActionResult<ProductsDTO>> GetProduct(short productId)
         {
             var product = await _context.Products.FindAsync(productId);
