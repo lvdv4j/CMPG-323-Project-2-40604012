@@ -201,3 +201,8 @@ To access, edit or add information for products, the following endpoints can be 
 ## References
 The following list of references were used to complete this project: 
 [References.xlsx](https://github.com/lvdv4j/CMPG-323-Project-2-40604012/files/12481506/References.xlsx)
+
+## Stretch Tasks
+The following stretch tasks were done for the project:
+- Implementation of DTOs: Although not stated within the bounds of the project, due to the fact that I was unable to add any orders to by database using the default payload schema, I looked into the use and implemented DTOs within my project which helped clean up a lot of the input and output of the database objects.
+- Implementation of Azure Key Vault: I looked extensively as well as did training on Azure ey Vault, and while I was able to implement it in my app, it did cause a lot of errors so I ultimatly decided to remove it.
