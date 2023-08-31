@@ -117,10 +117,10 @@ namespace cmpg323_project.Controllers
             return Ok(createdCustomerDTO);
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchCustomer(short id, JsonPatchDocument<Customer> patchDocument)
+        [HttpPatch("{customerID}")]
+        public async Task<IActionResult> PatchCustomer(short customerID, JsonPatchDocument<Customer> patchDocument)
         {
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(customerID);
             if (customer == null)
             {
                 return NotFound();
@@ -139,7 +139,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(customerID))
                 {
                     return NotFound();
                 }
@@ -154,20 +154,21 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Customers/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCustomer(short id, CustomersDTO customerDTO)
+        [HttpPut("{customerID}")]
+        public async Task<IActionResult> PutCustomer(short customerID, CustomersDTO customerDTO)
         {
-            if (id != customerDTO.CustomerId)
+            if (customerID != customerDTO.CustomerId)
             {
                 return BadRequest();
             }
 
-            if(!CustomerExists(id))
+            if(!CustomerExists(customerID))
             {
                 return NotFound();
             }
 
-            var customer = await _context.Customers.FindAsync(id);
+            var customer = await _context.Customers.FindAsync(customerID);
+
             customer.CustomerTitle = customerDTO.CustomerTitle;
             customer.CustomerName = customerDTO.CustomerName;
             customer.CustomerSurname = customerDTO.CustomerSurname;
@@ -179,7 +180,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CustomerExists(id))
+                if (!CustomerExists(customerID))
                 {
                     return NotFound();
                 }

@@ -71,7 +71,7 @@ namespace cmpg323_project.Controllers
                 return NotFound();
             }
 
-            // Create an OrderDTO object for the response
+            // Create an OrderDTO object
             var orderDTO = new OrdersDTO
             {
                 OrderId = order.OrderId,
@@ -106,10 +106,10 @@ namespace cmpg323_project.Controllers
             return Ok(orders);
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchOrder(short id, JsonPatchDocument<Order> patchDocument)
+        [HttpPatch("{customerId}")]
+        public async Task<IActionResult> PatchOrder(short customerId, JsonPatchDocument<Order> patchDocument)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders.FindAsync(customerId);
             if (order == null)
             {
                 return NotFound();
@@ -128,7 +128,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OrderExists(id))
+                if (!OrderExists(customerId))
                 {
                     return NotFound();
                 }
@@ -152,17 +152,19 @@ namespace cmpg323_project.Controllers
             }
 
             var existingOrder = await _context.Orders.FindAsync(orderId);
-            if (existingOrder == null)
-            {
-                return NotFound($"Order with ID {orderId} not found.");
-            }
 
             if (_context.Customers == null || _context.Products == null)
             {
                 return Problem("Entity sets are null.");
             }
 
+            if (existingOrder == null)
+            {
+                return NotFound($"Order with ID {orderId} not found.");
+            }
+
             var customer = await _context.Customers.FindAsync(orderDTO.CustomerId);
+
             if (customer == null)
             {
                 return NotFound($"Customer with ID {orderDTO.CustomerId} not found.");

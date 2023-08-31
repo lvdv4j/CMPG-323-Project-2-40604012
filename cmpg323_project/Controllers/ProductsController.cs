@@ -87,10 +87,10 @@ namespace cmpg323_project.Controllers
             return Ok(products);
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchProduct(short id, JsonPatchDocument<Product> patchDocument)
+        [HttpPatch("{productId}")]
+        public async Task<IActionResult> PatchProduct(short productId, JsonPatchDocument<Product> patchDocument)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(productId);
             if (product == null)
             {
                 return NotFound();
@@ -109,7 +109,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(productId))
                 {
                     return NotFound();
                 }
@@ -124,21 +124,21 @@ namespace cmpg323_project.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(short id, ProductsDTO productDTO)
+        [HttpPut("{productId}")]
+        public async Task<IActionResult> PutProduct(short productId, ProductsDTO productDTO)
         {
             if (id != productDTO.ProductId)
             {
                 return BadRequest();
             }
 
-            if (!ProductExists(id))
+            if (!ProductExists(productId))
             {
                 return NotFound();
             }
 
             // Get the product entity
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(productId);
 
             //Update the product using the DTO values
             product.ProductName = productDTO.ProductName;
@@ -151,7 +151,7 @@ namespace cmpg323_project.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ProductExists(id))
+                if (!ProductExists(productId))
                 {
                     return NotFound();
                 }
@@ -174,7 +174,7 @@ namespace cmpg323_project.Controllers
                 return Problem("Entity set 'project2sqldbContext.Products' is null.");
             }
 
-            // Create a Product entity using the DTO values
+            // Create a Product entity
             var product = new Product
             {
                 ProductId = productDTO.ProductId,
@@ -184,6 +184,7 @@ namespace cmpg323_project.Controllers
             };
 
             _context.Products.Add(product);
+
             try
             {
                 await _context.SaveChangesAsync();
